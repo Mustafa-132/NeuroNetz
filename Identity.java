@@ -5,4 +5,9 @@ public class Identity implements ActivationFunction {
         return x;
     }
 
+    @Override
+    public double derivative(double x){
+        return 1.0;
+    }
+
 }

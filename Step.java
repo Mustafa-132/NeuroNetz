@@ -15,6 +15,11 @@ public class Step implements ActivationFunction {
         return x >= step ? 1.0 : 0.0;
     }
 
+    @Override
+    public double derivative (double x){
+        return 0.0;
+    }
+
     public double getStep(){
         return step;
     }

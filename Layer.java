@@ -28,11 +28,44 @@ public class Layer {
 
         double[] outputs = new double[neurons.length];
 
+        if (inputs.length != neurons[0].getWeights().length){
+            System.out.println("Error: inputs.length != neurons[0].getWeights().length");
+            return outputs;
+        }
+
         for(int i = 0; i < neurons.length; i++){
             outputs[i] = neurons[i].output(inputs);
         }
 
         return outputs;
+
+    }
+
+    public void computeOutputDelta(double[] target){
+
+        for (int i = 0; i < neurons.length; i++){
+
+            double out = neurons[i].lastOutput;
+            double deriv = neurons[i].getActivation().derivative(neurons[i].lastSum);
+            neurons[i].delta = deriv * (target[i] - out);
+
+        }
+
+    }
+
+    //Backpropagation
+    public void computeHiddenDelta(Layer next){
+
+        for (int i = 0; i < neurons.length; i++){
+
+            double sum = 0.0;
+            for (Neuron neuron : next.getNeurons()){
+                sum += neuron.delta * neuron.getWeights()[i];
+            }
+            double deriv = neurons[i].getActivation().derivative(neurons[i].lastSum);
+            neurons[i].delta = deriv * sum;
+
+        }
 
     }
 

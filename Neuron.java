@@ -4,6 +4,11 @@ public class Neuron {
     private double bias;
     private ActivationFunction activation;
 
+    public double[] lastInputs;
+    public double lastSum;
+    public double lastOutput;
+    public double delta;
+
     public Neuron(int numInputs, ActivationFunction activation){
 
         this.weights = new double[numInputs];
@@ -23,13 +28,22 @@ public class Neuron {
 
     public double output(double[] inputs){
 
+        lastInputs = inputs;
         double sum = bias;
+
+        if (inputs.length != weights.length){
+            System.out.println("Error: inputs.length != weights.length");
+            return 0.0;
+        }
 
         for(int i = 0; i < inputs.length; i++){
             sum += inputs[i] * weights[i];
         }
 
-        return activation.activate(sum);
+        lastSum = sum;
+        lastOutput = activation.activate(sum);
+
+        return lastOutput;
 
     }
 
@@ -43,6 +57,16 @@ public class Neuron {
             weights = newWeights;
         else
             System.out.println("Error: weights array length does not match");
+    }
+
+    //Backpropagation
+    public void updateWeights(double learningRate) {
+
+        for (int i = 0; i < weights.length; i++){
+            weights[i] += learningRate * delta * lastInputs[i];
+        }
+        bias += learningRate * delta;
+
     }
 
     public double getBias(){
